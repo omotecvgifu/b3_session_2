@@ -5,6 +5,6 @@
 # python b3_session_cnn.py name=test4 seed=42 epochs=1
 
 #実験開始
-python b3_session_cnn.py -m name=test_compare_transform seed=0,42,100 epochs=0 transform.pattern=0,1,2,3,4,5 #transformのパターン
+python b3_session_cnn.py -m name=compare_transform seed=0,42,100  transform.pattern=0,1,2,3,4,5 #transformのパターン
 
 
