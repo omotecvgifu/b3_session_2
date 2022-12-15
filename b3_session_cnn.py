@@ -74,19 +74,19 @@ def fix_seed(seed=42):
 
 ##-------------mlflowを使った記録するクラス関係
 class MlflowWriter():
-    def __init__(self, experiment_name):
-        self.client = MlflowClient()
-        try:
-            self.experiment_id = self.client.create_experiment(experiment_name)
-        except Exception as e:
-            print(e)
-            self.experiment_id = self.client.get_experiment_by_name(experiment_name).experiment_id
+    # def __init__(self, experiment_name,tags):
+    #     self.client = MlflowClient()
+    #     try:
+    #         self.experiment_id = self.client.create_experiment(experiment_name,tags)
+    #     except Exception as e:
+    #         print(e)
+    #         self.experiment_id = self.client.get_experiment_by_name(experiment_name).experiment_id
 
-        self.experiment = self.client.get_experiment(self.experiment_id)
-        print("New experiment started")
-        print(f"Name: {self.experiment.name}")
-        print(f"Experiment_id: {self.experiment.experiment_id}")
-        print(f"Artifact Location: {self.experiment.artifact_location}")
+    #     self.experiment = self.client.get_experiment(self.experiment_id)
+    #     print("New experiment started")
+    #     print(f"Name: {self.experiment.name}")
+    #     print(f"Experiment_id: {self.experiment.experiment_id}")
+    #     print(f"Artifact Location: {self.experiment.artifact_location}")
 
     def log_params_from_omegaconf_dict(self, params):
         for param_name, element in params.items():
@@ -130,14 +130,14 @@ class MlflowWriter():
         self.run = self.client.create_run(self.experiment_id, tags=tags)
         self.run_id = self.run.info.run_id
         print(f"New run started: {tags['mlflow.runName']}")
-    def __init__(self, experiment_name, **kwargs):
+    def __init__(self, experiment_name,run_tags=None, **kwargs):
         self.client = MlflowClient(**kwargs)
         try:
             self.experiment_id = self.client.create_experiment(experiment_name)
         except:
             self.experiment_id = self.client.get_experiment_by_name(experiment_name).experiment_id
 
-        self.run_id = self.client.create_run(self.experiment_id).info.run_id
+        self.run_id = self.client.create_run(self.experiment_id,tags=run_tags).info.run_id
 
     # def log_params_from_omegaconf_dict(self, params):
     #     for param_name, element in params.items():
@@ -453,7 +453,12 @@ def main(cfg: DictConfig):
 
     #MLflow Tracking を使用して実験過程、結果を記録するwriterを作成
     EXPERIMENT_NAME = cfg.name #mlflow uiの「Experiments」に表示される実験名
-    writer = MlflowWriter(EXPERIMENT_NAME) #writerを作成しexperiment=実験を開始
+    run_tags = {'trial':cfg.seed,
+        MLFLOW_RUN_NAME:cfg.name,
+        MLFLOW_USER:"hideaki Omote",
+        MLFLOW_SOURCE_NAME:__file__,
+        }
+    writer = MlflowWriter(experiment_name= EXPERIMENT_NAME,run_tags=run_tags) #writerを作成しexperiment=実験を開始
     writer.log_params_from_omegaconf_dict(cfg)#cfgのハイパーパラメーターを一括でwriterで記録(mlflow ui　の Parameters)
 
     #seedを固定化
@@ -561,10 +566,10 @@ def main(cfg: DictConfig):
 
         #学習過程をmlflowに記録
         #log_metric_stepは連続的に変化する値を保存
-        writer.log_metric_step('train_loss', train_loss,epoch) #引数：評価指標の名前,値,step
-        writer.log_metric_step('train_acc', train_acc,epoch)
-        writer.log_metric_step('valid_loss', valid_loss,epoch)
-        writer.log_metric_step('valid_acc', valid_acc,epoch)
+        writer.log_metric_step('train_loss', train_loss,epoch+1) #引数：評価指標の名前,値,step
+        writer.log_metric_step('train_acc', train_acc,epoch+1)
+        writer.log_metric_step('valid_loss', valid_loss,epoch+1)
+        writer.log_metric_step('valid_acc', valid_acc,epoch+1)
 
         print(f"| Train | Epoch   {epoch+1} |: train_loss:{train_loss:.3f}, train_acc:{train_acc*100:3.3f}% | valid_loss:{valid_loss:.5f}, valid_acc:{valid_acc*100:3.3f}%")
 
@@ -576,37 +581,40 @@ def main(cfg: DictConfig):
     print('Finished Training\n')
     
 
-    #========== テスト ==========#
-    test_dataset = load_cifar10(transform=test_transform, train=False) #データセット作成
+    # #========== テスト ==========#
+    # test_dataset = load_cifar10(transform=test_transform, train=False) #データセット作成
 
-    #データローダー作成
-    test_loader = fix_seed_dataLoader(
-        test_dataset,
-        #batch_size=256,
-        shuffle=False,
-        pin_memory=True,
-        num_workers=4,
-        **cfg.dataloader    
-    )
-    print(f"test : {len(test_dataset):5.0f} [set]")
+    # #データローダー作成
+    # test_loader = fix_seed_dataLoader(
+    #     test_dataset,
+    #     #batch_size=256,
+    #     shuffle=False,
+    #     pin_memory=True,
+    #     num_workers=4,
+    #     **cfg.dataloader    
+    # )
+    # print(f"test : {len(test_dataset):5.0f} [set]")
 
-    loop = tqdm(test_loader, unit='batch', desc='| Test | Epoch {:>3} |'.format(epoch+1)) #loop = test_loader
-    test_metrics = test_model(loop,model,criterion,device)#テストデータで評価
+    # loop = tqdm(test_loader, unit='batch', desc='| Test | Epoch {:>3} |'.format(epoch+1)) #loop = test_loader
+    # test_metrics = test_model(loop,model,criterion,device)#テストデータで評価
 
-    #テスト結果を取り出し
-    test_loss = test_metrics['test_loss']
-    test_acc = test_metrics['test_acc']
+    # #テスト結果を取り出し
+    # test_loss = test_metrics['test_loss']
+    # test_acc = test_metrics['test_acc']
 
-    print("テストデータに対する結果")
-    test_loss_str = f"test_loss   ：{test_loss:3.5f}"
-    print(test_loss_str)
-    test_acc_str = f"test_acc    ：{test_acc*100:2.3f}%"
-    print(test_acc_str)
+    # print("テストデータに対する結果")
+    # test_loss_str = f"test_loss   ：{test_loss:3.5f}"
+    # print(test_loss_str)
+    # test_acc_str = f"test_acc    ：{test_acc*100:2.3f}%"
+    # print(test_acc_str)
 
-    #writerでテスト結果を保存
-    #log_metric関数は単一の評価指標を記録するのに使用
-    writer.log_metric('test_loss', test_loss) #引数：　評価指標の名前,値
-    writer.log_metric('test_acc', test_acc)
+    # #writerでテスト結果を保存
+    # #log_metric関数は単一の評価指標を記録するのに使用
+    # writer.log_metric('test_loss', test_loss) #引数：　評価指標の名前,値
+    # writer.log_metric('test_acc', test_acc)
+
+
+
 
     writer.set_terminated()#一つのexperimentまたはrunを終えるときは必ず呼び出す
 
