@@ -1,6 +1,6 @@
 name: "default"
 seed: 42
-epochs: 200
+epochs: 50
 
 transform:
   pattern: 0

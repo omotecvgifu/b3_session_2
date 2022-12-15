@@ -190,65 +190,116 @@ def load_cifar10(transform, train:bool):
 """
 pattern
 0:標準
-1:画像を左右反転
+1:画像を水平反転
 2:画像を垂直反転
 3:画像を回転
 4:ランダムクロップ
+5: ランダムアージング
 """
 def choose_transform(pattern = 0):
     if pattern == 0:
         train_transform = transforms.Compose([
-                                    # transforms.RandomHorizontalFlip(p=0.5), #画像を左右反転
-                                    # transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
-                                    # transforms.RandomRotation(degrees=30),#画像を回転
-                                    transforms.ToTensor(),
-                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                                    #transforms.RandomErasing(p=0.5, scale=(0.02, 0.33), ratio=(0.3, 3.3), value=0) #画像を切り抜き
+            #transforms.RandomHorizontalFlip(p=0.5),#画像を水平反転
+            #transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
+            #transforms.RandomRotation(degrees=(-15,15)), #画像回転
+            #transforms.RandomCrop(32, padding=4), #画像を切り抜き
+
+            #transforms.GaussianBlur(kernel_size=15),
+            #transforms.RandomPosterize(bits=1, p=1.0),
+            #transforms.RandomAdjustSharpness(p=1.0, sharpness_factor=3),
+                                
+            transforms.ToTensor(),
+            transforms.Normalize( (0.5, 0.5, 0.5), (0.5, 0.5, 0.5) ),
+            
+            #transforms.RandomErasing(p=0.5, scale=(0.02, 0.1), ratio=(0.3, 3.3), value=0), #画像の一部を塗りつぶす
         ])
         return  train_transform
     elif pattern == 1:
         train_transform = transforms.Compose([
-                                    transforms.RandomHorizontalFlip(p=0.5), #画像を左右反転
-                                    # transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
-                                    # transforms.RandomRotation(degrees=30),#画像を回転
-                                    transforms.ToTensor(),
-                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                                    #transforms.RandomErasing(p=0.5, scale=(0.02, 0.33), ratio=(0.3, 3.3), value=0) #画像を切り抜き
+            transforms.RandomHorizontalFlip(p=0.5),#画像を水平反転
+            #transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
+            #transforms.RandomRotation(degrees=(-15,15)), #画像回転
+            #transforms.RandomCrop(32, padding=4), #画像を切り抜き
+
+            #transforms.GaussianBlur(kernel_size=15),
+            #transforms.RandomPosterize(bits=1, p=1.0),
+            #transforms.RandomAdjustSharpness(p=1.0, sharpness_factor=3),
+                                
+            transforms.ToTensor(),
+            transforms.Normalize( (0.5, 0.5, 0.5), (0.5, 0.5, 0.5) ),
+            
+            #transforms.RandomErasing(p=0.5, scale=(0.02, 0.1), ratio=(0.3, 3.3), value=0), #画像の一部を塗りつぶす
         ])
         return  train_transform
     elif pattern == 2:
         train_transform = transforms.Compose([
-                                    # transforms.RandomHorizontalFlip(p=0.5), #画像を左右反転
-                                    transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
-                                    # transforms.RandomRotation(degrees=30),#画像を回転
-                                    transforms.ToTensor(),
-                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                                    #transforms.RandomErasing(p=0.5, scale=(0.02, 0.33), ratio=(0.3, 3.3), value=0) #画像を切り抜き
+            #transforms.RandomHorizontalFlip(p=0.5),#画像を水平反転
+            transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
+            #transforms.RandomRotation(degrees=(-15,15)), #画像回転
+            #transforms.RandomCrop(32, padding=4), #画像を切り抜き
+
+            #transforms.GaussianBlur(kernel_size=15),
+            #transforms.RandomPosterize(bits=1, p=1.0),
+            #transforms.RandomAdjustSharpness(p=1.0, sharpness_factor=3),
+                                
+            transforms.ToTensor(),
+            transforms.Normalize( (0.5, 0.5, 0.5), (0.5, 0.5, 0.5) ),
+            
+            #transforms.RandomErasing(p=0.5, scale=(0.02, 0.1), ratio=(0.3, 3.3), value=0), #画像の一部を塗りつぶす
         ])
         return  train_transform
     elif pattern == 3:
         train_transform = transforms.Compose([
-                                    # transforms.RandomHorizontalFlip(p=0.5), #画像を左右反転
-                                    # transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
-                                    transforms.RandomRotation(degrees=30),#画像を回転
-                                    transforms.ToTensor(),
-                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                                    #transforms.RandomErasing(p=0.5, scale=(0.02, 0.33), ratio=(0.3, 3.3), value=0) #画像を切り抜き
+            #transforms.RandomHorizontalFlip(p=0.5),#画像を水平反転
+            #transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
+            transforms.RandomRotation(degrees=(-15,15)), #画像回転
+            #transforms.RandomCrop(32, padding=4), #画像を切り抜き
+
+            #transforms.GaussianBlur(kernel_size=15),
+            #transforms.RandomPosterize(bits=1, p=1.0),
+            #transforms.RandomAdjustSharpness(p=1.0, sharpness_factor=3),
+                                
+            transforms.ToTensor(),
+            transforms.Normalize( (0.5, 0.5, 0.5), (0.5, 0.5, 0.5) ),
+            
+            #transforms.RandomErasing(p=0.5, scale=(0.02, 0.1), ratio=(0.3, 3.3), value=0), #画像の一部を塗りつぶす
         ])
         return  train_transform
 
     elif pattern == 4:
         train_transform = transforms.Compose([
-                                    # transforms.RandomHorizontalFlip(p=0.5), #画像を左右反転
-                                    # transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
-                                    # transforms.RandomRotation(degrees=30),#画像を回転
-                                    transforms.ToTensor(),
-                                    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-                                    transforms.RandomErasing(p=0.5, scale=(0.02, 0.33), ratio=(0.3, 3.3), value=0) #画像を切り抜き
+            #transforms.RandomHorizontalFlip(p=0.5),#画像を水平反転
+            #transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
+            #transforms.RandomRotation(degrees=(-15,15)), #画像垂直反転
+            transforms.RandomCrop(32, padding=4), #画像を切り抜き
+
+            #transforms.GaussianBlur(kernel_size=15),
+            #transforms.RandomPosterize(bits=1, p=1.0),
+            #transforms.RandomAdjustSharpness(p=1.0, sharpness_factor=3),
+                                
+            transforms.ToTensor(),
+            transforms.Normalize( (0.5, 0.5, 0.5), (0.5, 0.5, 0.5) ),
+            #transforms.RandomErasing(p=0.5, scale=(0.02, 0.1), ratio=(0.3, 3.3), value=0), #画像の一部を塗りつぶす
         ])
         return  train_transform
 
+    elif pattern == 5:
+        transform = transforms.Compose([
+            #transforms.RandomHorizontalFlip(p=0.5),#画像を水平反転
+            #transforms.RandomVerticalFlip(p=0.5), #画像を垂直反転
+            #transforms.RandomRotation(degrees=(-15,15)), #画像回転
+            #transforms.RandomCrop(32, padding=4), #画像を切り抜き
 
+            #transforms.GaussianBlur(kernel_size=15),
+            #transforms.RandomPosterize(bits=1, p=1.0),
+            #transforms.RandomAdjustSharpness(p=1.0, sharpness_factor=3),
+                                
+            transforms.ToTensor(),
+            transforms.Normalize( (0.5, 0.5, 0.5), (0.5, 0.5, 0.5) ),
+            
+            transforms.RandomErasing(p=0.5, scale=(0.02, 0.1), ratio=(0.3, 3.3), value=0), #画像の一部を塗りつぶす
+        ])
+        return transform
     else:
         raise ValueError("存在しないtransform")
 
@@ -453,7 +504,7 @@ def main(cfg: DictConfig):
 
     #MLflow Tracking を使用して実験過程、結果を記録するwriterを作成
     EXPERIMENT_NAME = cfg.name #mlflow uiの「Experiments」に表示される実験名
-    run_tags = {'trial':cfg.seed,
+    run_tags = {'seed':cfg.seed,
         MLFLOW_RUN_NAME:cfg.name,
         MLFLOW_USER:"hideaki Omote",
         MLFLOW_SOURCE_NAME:__file__,
@@ -574,9 +625,9 @@ def main(cfg: DictConfig):
         print(f"| Train | Epoch   {epoch+1} |: train_loss:{train_loss:.3f}, train_acc:{train_acc*100:3.3f}% | valid_loss:{valid_loss:.5f}, valid_acc:{valid_acc*100:3.3f}%")
 
         #過学習を起こしているなら次の10n回目で学習中断
-        if (valid_loss - train_loss) / valid_loss >= 0.5 and (epoch+1)%10 == 0 :
-            print("過学習なので停止")
-            break
+        # if (valid_loss - train_loss) / valid_loss >= 0.5 and (epoch+1)%10 == 0 :
+        #     print("過学習なので停止")
+        #     break
 
     print('Finished Training\n')
     
