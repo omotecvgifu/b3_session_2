@@ -5,6 +5,7 @@
 # python b3_session_cnn.py name=test4 seed=42 epochs=1
 
 #実験開始
-python b3_session_cnn.py -m name=compare_transform seed=0,42,100  transform.pattern=0,1,2,3,4,5 #transformのパターン
+#transformのパターン 
+python b3_session_cnn.py --multirun name=compare_transform seed=0,42,100 transform.pattern=a,b,c,d,e,ab,ac,ad,ae,bc,bd,be,cd,ce,de,abc,abd,abe,acd,ace,ade,bcd,bce,bde,cde,abcd,abce,abde,acde,bcde,abcde
 
 
