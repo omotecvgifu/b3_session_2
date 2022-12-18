@@ -23,11 +23,13 @@ from torch.utils.tensorboard import SummaryWriter
 # from datetime import datetime
 import random
 import os
+import datetime
 
 #yml
 from omegaconf import DictConfig, ListConfig,OmegaConf
 import hydra
 
+#mlflow
 import mlflow
 from mlflow.tracking import MlflowClient
 from mlflow.utils.mlflow_tags import MLFLOW_RUN_NAME,MLFLOW_USER,MLFLOW_SOURCE_NAME
@@ -267,38 +269,136 @@ class EncoderBlock(nn.Module):
         return out
 
 class Classifier(nn.Module):
-    def __init__(self, class_num, enc_dim, in_w, in_h):
+    def __init__(self, class_num, enc_dim, in_w, in_h,type=0):
         super().__init__()
 
-        # self.enc_dim = enc_dim
-        self.in_w = in_w
-        self.in_h = in_h
-        self.fc_dim = enc_dim*4 * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
-        self.class_num = class_num
+        if(type == 0):
+            # self.enc_dim = enc_dim
+            self.in_w = in_w
+            self.in_h = in_h
+            self.fc_dim = enc_dim*4 * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
+            self.class_num = class_num
 
-        self.encoder = nn.Sequential(
-            EncoderBlock(3      , enc_dim),
-            EncoderBlock(enc_dim, enc_dim),
-            nn.MaxPool2d(kernel_size=2),#h,wが1/2
+            self.encoder = nn.Sequential(
+                EncoderBlock(3      , enc_dim),
+                EncoderBlock(enc_dim, enc_dim),
+                nn.MaxPool2d(kernel_size=2),#h,wが1/2
 
-            EncoderBlock(enc_dim  , enc_dim*2),
-            EncoderBlock(enc_dim*2, enc_dim*2),
-            nn.MaxPool2d(kernel_size=2),
+                EncoderBlock(enc_dim  , enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                nn.MaxPool2d(kernel_size=2),
 
-            EncoderBlock(enc_dim*2, enc_dim*4),
-            EncoderBlock(enc_dim*4, enc_dim*4),
-            nn.MaxPool2d(kernel_size=2),
-        )
+                EncoderBlock(enc_dim*2, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),
+            )
 
 
-        self.fc = nn.Sequential(
-            nn.Linear(self.fc_dim, 512),
-            nn.ReLU(),
-            nn.Linear(512, 256),
-            nn.ReLU(),
-            nn.Linear(256, self.class_num),
-        )
-    
+            self.fc = nn.Sequential(
+                nn.Linear(self.fc_dim, 512),
+                nn.ReLU(),
+                nn.Linear(512, 256),
+                nn.ReLU(),
+                nn.Linear(256, self.class_num),
+            )
+        elif(type == 1):
+            self.in_w = in_w
+            self.in_h = in_h
+            self.fc_dim = enc_dim*4 * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
+            self.class_num = class_num
+
+            self.encoder = nn.Sequential(
+                EncoderBlock(3      , enc_dim),
+                EncoderBlock(enc_dim, enc_dim),
+                EncoderBlock(enc_dim, enc_dim),
+                nn.MaxPool2d(kernel_size=2),#h,wが1/2
+
+                EncoderBlock(enc_dim  , enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*2, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),
+            )
+
+
+            self.fc = nn.Sequential(
+                nn.Linear(self.fc_dim, 512),
+                nn.ReLU(),
+                nn.Linear(512, 256),
+                nn.ReLU(),
+                nn.Linear(256, self.class_num),
+            )
+        elif(type == 2):
+            self.in_w = in_w
+            self.in_h = in_h
+            self.fc_dim = enc_dim*8 * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
+            self.class_num = class_num
+
+            self.encoder = nn.Sequential(
+                EncoderBlock(3      , enc_dim),
+                EncoderBlock(enc_dim, enc_dim),
+                nn.MaxPool2d(kernel_size=2),#h,wが1/2
+
+                EncoderBlock(enc_dim  , enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*2, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*4, enc_dim*8),
+                EncoderBlock(enc_dim*8, enc_dim*8),
+            )
+
+
+            self.fc = nn.Sequential(
+                nn.Linear(self.fc_dim,1024),
+                nn.ReLU(),
+                nn.Linear(1024, 512),
+                nn.ReLU(),
+                nn.Linear(512, self.class_num),
+            )
+        
+        elif(type == 3):
+            self.in_w = in_w
+            self.in_h = in_h
+            self.fc_dim = enc_dim * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
+            self.class_num = class_num
+
+            self.encoder = nn.Sequential(
+                EncoderBlock(3      , enc_dim),
+                EncoderBlock(enc_dim, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                nn.MaxPool2d(kernel_size=2),#h,wが1/2
+
+                EncoderBlock(enc_dim*2, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*8),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*8, enc_dim*8),
+                EncoderBlock(enc_dim*8, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*4, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim),
+            )
+
+
+            self.fc = nn.Sequential(
+                nn.Linear(self.fc_dim, 512),
+                nn.ReLU(),
+                nn.Linear(512, 256),
+                nn.ReLU(),
+                nn.Linear(256, self.class_num),
+            )
     def forward(self, x):
         out = self.encoder(x)
         out = out.view(-1, self.fc_dim)
@@ -319,6 +419,14 @@ def initialize_weights(m):
         nn.init.kaiming_normal_(m.weight.data)  # kaimingの初期化
         nn.init.constant_(m.bias.data, 0)       # biasは0に初期化
 ##--------------------------------------------
+
+
+##optimizer関係
+def make_optimizer(params, name, **kwargs):
+    # Optimizer作成
+    return optim.__dict__[name](params, **kwargs)
+
+##--------------------
 
 ##---------------------訓練関係
 def train_model(train_loader,model,criterion,optimizer,device):
@@ -442,9 +550,14 @@ def main(cfg: DictConfig):
     print("実験設定")
     print(OmegaConf.to_yaml(cfg))#config表示
 
+    #時刻設定
+    dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
+    time_now = dt_now.strftime('%Y年%m月%d日 %H:%M:%S')
+
     #MLflow Tracking を使用して実験過程、結果を記録するwriterを作成
-    EXPERIMENT_NAME = cfg.name #mlflow uiの「Experiments」に表示される実験名
+    EXPERIMENT_NAME = f"{cfg.name}" #mlflow uiの「Experiments」に表示される実験名
     run_tags = {'seed':cfg.seed,
+        "time":time_now,
         MLFLOW_RUN_NAME:cfg.name,
         MLFLOW_USER:"hideaki Omote",
         MLFLOW_SOURCE_NAME:__file__,
@@ -521,7 +634,9 @@ def main(cfg: DictConfig):
     print(criterion)
     print("\n")
     # 最適化アルゴリズムを指定
-    optimizer = optim.Adam(model.parameters(), **cfg.optimizer)  # 最適化関数Adam
+    optimizer = make_optimizer(model.parameters(), **cfg.optimizer)  # 最適化関数Adam
+    #　学習率調整スケジューラを作成
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, mode = 'min',patience=5,factor=0.1) 
     print("最適化関数")
     print(optimizer)
     print("\n")
@@ -557,6 +672,11 @@ def main(cfg: DictConfig):
         history['train_acc'].append(train_metrics['train_acc'])
         history['valid_acc'].append(valid_metrics['valid_acc'])
 
+        # 学習率を調整
+        scheduler.step(valid_loss)
+        now_lr = optimizer.param_groups[0]["lr"]
+        writer.log_metric_step("lr",now_lr,epoch+1)
+
         #学習過程をmlflowに記録
         #log_metric_stepは連続的に変化する値を保存
         writer.log_metric_step('train_loss', train_loss,epoch+1) #引数：評価指標の名前,値,step
@@ -564,7 +684,7 @@ def main(cfg: DictConfig):
         writer.log_metric_step('valid_loss', valid_loss,epoch+1)
         writer.log_metric_step('valid_acc', valid_acc,epoch+1)
 
-        print(f"| Train | Epoch   {epoch+1} |: train_loss:{train_loss:.3f}, train_acc:{train_acc*100:3.3f}% | valid_loss:{valid_loss:.5f}, valid_acc:{valid_acc*100:3.3f}%")
+        print(f"| Train | Epoch   {epoch+1} |: train_loss:{train_loss:.3f}, train_acc:{train_acc*100:3.3f}% | valid_loss:{valid_loss:.5f}, valid_acc:{valid_acc*100:3.3f}%, now_lr:{now_lr:.1E}%")
 
         #過学習を起こしているなら次の10n回目で学習中断
         # if (valid_loss - train_loss) / valid_loss >= 0.5 and (epoch+1)%10 == 0 :

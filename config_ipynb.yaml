@@ -3,7 +3,7 @@ seed: 42
 epochs: 10
 
 transform:
-  pattern: 0
+  pattern: ""
 
 dataloader:
   batch_size: 256

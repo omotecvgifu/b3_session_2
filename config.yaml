@@ -2,16 +2,33 @@ name: "default"
 seed: 42
 epochs: 100
 
+# """
+# pattern
+# "":標準
+# "a":画像を水平反転
+# "b":画像を垂直反転
+# "c":画像を回転
+# "d":ランダムクロップ
+# "e": ランダムアージング
+# """
 transform:
-  pattern: ""
+  pattern: "" #abcdeを並び変えて設定
 
 dataloader:
   batch_size: 256
 
+# type
+# 0:最初の
+# 1:畳み込み層を増加
+# 2:MaxPoolを増加
+# 3:1と2
 model:
+  type: 0
   enc_dim: 128
 
 optimizer:
-  lr: 1.0e-4
+  name: Adam  # SGD,Adam
+  lr: 1.0e-2
+  weight_decay: 0 #1.0e-4
 
 
