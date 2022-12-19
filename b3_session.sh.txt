@@ -1,4 +1,12 @@
 1.transform 選定
+#transformのパターン 
+python b3_session_cnn.py --multirun name=compare_transform seed=0,42,100 transform.pattern=a,b,c,d,e,ab,ac,ad,ae,bc,bd,be,cd,ce,de,abc,abd,abe,acd,ace,ade,bcd,bce,bde,cde,abcd,abce,abde,acde,bcde,abcde
+ad使用
+
+
+
+
+モデル選定
 
 python b3_session_cnn.py -m transform.pattern="ad" name="test_model" model.type=3  model.enc_dim=64
 92.3
