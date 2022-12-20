@@ -1,6 +1,6 @@
 import itertools
 
-l = ['a', 'b', 'c', 'd',"e"]
+l = ['a', 'b', 'c', 'd']
 
 c = itertools.combinations(l, 2)
 

@@ -193,10 +193,9 @@ def load_cifar10(transform, train:bool):
 pattern
 "":標準
 "a":画像を水平反転
-"b":画像を垂直反転
-"c":画像を回転
-"d":ランダムクロップ
-"e": ランダムアージング
+"b":画像を回転
+"c":ランダムクロップ
+"d": ランダムアージング
 """
 #入力は
 def make_transform(pattern=""):
@@ -210,15 +209,15 @@ def make_transform(pattern=""):
     #使用するtransform indexが番号に対応
     use_transform_list = {
         "a":transforms.RandomHorizontalFlip(p=0.5),#0:画像を水平反転
-        "b":transforms.RandomVerticalFlip(p=0.5), #1:画像を垂直反転
-        "c":transforms.RandomRotation(degrees=(-15,15)), #2:画像回転
-        "d":transforms.RandomCrop(32, padding=4), #3:画像を切り抜き
+        #"b":transforms.RandomVerticalFlip(p=0.5), #1:画像を垂直反転
+        "b":transforms.RandomRotation(degrees=(-10,10)), #2:画像回転
+        "c":transforms.RandomCrop(32, padding=4), #3:画像を切り抜き
 
         #transforms.GaussianBlur(kernel_size=15),
         #transforms.RandomPosterize(bits=1, p=1.0),
         #transforms.RandomAdjustSharpness(p=1.0, sharpness_factor=3),
 
-        "e":transforms.RandomErasing(p=0.5, scale=(0.02, 0.1), ratio=(0.3, 3.3), value=0), #4:画像の一部を塗りつぶす
+        "d":transforms.RandomErasing(p=0.5, scale=(0.02, 0.1), ratio=(0.3, 3.3), value=0), #4:画像の一部を塗りつぶす
     }
 
 

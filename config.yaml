@@ -28,7 +28,7 @@ model:
 
 optimizer:
   name: Adam  # SGD,Adam
-  lr: 1.0e-2
+  lr: 1.0e-3
   weight_decay: 0 #1.0e-4
 
 
