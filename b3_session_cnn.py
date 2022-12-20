@@ -556,6 +556,10 @@ def main(cfg: DictConfig):
     print("実験設定")
     print(OmegaConf.to_yaml(cfg))#config表示
 
+    #ディレクトリ取得
+    cwd = hydra.utils.get_original_cwd()
+    mlflow.set_tracking_uri("file://" + "/home/omote/b3_session_projects/mlruns")#絶対pathの先頭に"file://"をつける
+
     #時刻設定
     dt_now = datetime.datetime.now(datetime.timezone(datetime.timedelta(hours=9)))
     time_now = dt_now.strftime('%Y年%m月%d日 %H:%M:%S')
