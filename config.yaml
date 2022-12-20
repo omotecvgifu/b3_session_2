@@ -4,15 +4,14 @@ epochs: 100
 
 # """
 # pattern
-# "":標準
+# "null":標準
 # "a":画像を水平反転
-# "b":画像を垂直反転
-# "c":画像を回転
-# "d":ランダムクロップ
-# "e": ランダムアージング
+# "b":画像を回転
+# "c":ランダムクロップ
+# "d": ランダムアージング
 # """
 transform:
-  pattern: "" #abcdeを並び変えて設定
+  pattern: null #abcdを並び変えて設定
 
 dataloader:
   batch_size: 256
@@ -28,7 +27,7 @@ model:
 
 optimizer:
   name: Adam  # SGD,Adam
-  lr: 1.0e-3
+  lr: 1.0e-2
   weight_decay: 0 #1.0e-4
 
 

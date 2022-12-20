@@ -191,14 +191,14 @@ def load_cifar10(transform, train:bool):
 ##-----------------transformsを選択
 """
 pattern
-"":標準
+"None":標準
 "a":画像を水平反転
 "b":画像を回転
 "c":ランダムクロップ
 "d": ランダムアージング
 """
 #入力は
-def make_transform(pattern=""):
+def make_transform(pattern=None):
     
 
     #必ず使うtransform
@@ -222,12 +222,15 @@ def make_transform(pattern=""):
 
 
     #transformを作成
-    if(pattern == ""):#空ならデフォルト
+    if(pattern == None):#空ならデフォルト
+        print("transform")
         print(pattern)
+        print(default_transform_list)
+        print("\n")
         return  transforms.Compose(default_transform_list)
 
     else:#それいがいなら加工したtransformをわたす。
-        print(list(pattern))
+        
         pattern_split = list(pattern)
 
         pre_transform_list = []
@@ -241,7 +244,11 @@ def make_transform(pattern=""):
                 pre_transform_list.append(use_transform)
 
         transform_list = pre_transform_list + default_transform_list + suf_transform_list
+        
+        print("transform")
+        print(pattern)
         print(transform_list)
+        print("\n")
         return transforms.Compose(transform_list)
 
 ##----------モデル関係
