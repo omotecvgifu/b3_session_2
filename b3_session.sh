@@ -6,6 +6,6 @@
 
 #実験開始
 #transformのパターン 
-python b3_session_cnn.py --multirun name=compare_transform2 seed=100 transform.pattern=bd,cd,abc,abd,acd,bcd,abcd
+python b3_session_cnn.py --multirun name=compare_transform3 seed=0,42,100 transform.pattern=a,b,c,d,ab,ac,ad,bc,bd,cd,abc,abd,acd,bcd,abcd
 #python b3_session_cnn.py --multirun name=compare_model  seed=0,42,100 model.type=0,1,2,3 model.enc_dim=64,128,256
 
