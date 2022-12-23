@@ -8,6 +8,9 @@
 #transformのパターン 
 #python b3_session_cnn.py --multirun name=compare_transform3 seed=0,42,100 transform.pattern=null,a,b,c,d,ab,ac,ad,bc,bd,cd,abc,abd,acd,bcd,abcd
 #モデルのパターン
+python b3_session_cnn.py --multirun name=test_compare_model transform.pattern=null,abcd seed=0,42,100 model.type=0,1 model.enc_dim=64,128,256
 python ./tests/gmail.py
-#python b3_session_cnn.py --multirun name=compare_model  seed=0,42,100 model.type=0,1,2,3 model.enc_dim=64,128,256
+python b3_session_cnn.py --multirun name=test_compare_model transform.pattern=null,abcd seed=0,42,100 model.type=2 model.enc_dim=64,128
+python ./tests/gmail.py
+
 

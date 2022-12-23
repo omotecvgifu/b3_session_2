@@ -18,9 +18,9 @@ dataloader:
 
 # type
 # 0:最初の
-# 1:畳み込み層を増加
-# 2:MaxPoolを増加
-# 3:1と2
+# 10:畳み込み層を増加
+# 1:MaxPoolを増加
+# 2:1と2
 model:
   type: 0
   enc_dim: 128

@@ -307,7 +307,7 @@ class Classifier(nn.Module):
                 nn.ReLU(),
                 nn.Linear(256, self.class_num),
             )
-        elif(type == 1):
+        elif(type == 10):
             self.in_w = in_w
             self.in_h = in_h
             self.fc_dim = enc_dim*4 * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
@@ -338,7 +338,7 @@ class Classifier(nn.Module):
                 nn.ReLU(),
                 nn.Linear(256, self.class_num),
             )
-        elif(type == 2):
+        elif(type == 1):
             self.in_w = in_w
             self.in_h = in_h
             self.fc_dim = enc_dim*8 * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
@@ -370,7 +370,7 @@ class Classifier(nn.Module):
                 nn.Linear(512, self.class_num),
             )
         
-        elif(type == 3):
+        elif(type == 2):
             self.in_w = in_w
             self.in_h = in_h
             self.fc_dim = enc_dim * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
