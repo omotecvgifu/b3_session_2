@@ -744,6 +744,12 @@ def main(cfg: DictConfig):
     writer.log_metric('valid_acc_max',  max(history["valid_acc"]))
     writer.log_metric('test_loss_max',  max(history["test_loss"])) #引数：　評価指標の名前,値
     writer.log_metric('test_acc_max',  max(history["test_acc"]))
+    writer.log_metric('train_loss_max_step', np.argmax(history["train_loss"])) #引数：評価指標の名前,値,step
+    writer.log_metric('train_acc_max_step',  np.argmax(history["train_acc"]))
+    writer.log_metric('valid_loss_max_step',  np.argmax(history["valid_loss"]))
+    writer.log_metric('valid_acc_max_step',  np.argmax(history["valid_acc"]))
+    writer.log_metric('test_loss_max_step',  np.argmax(history["test_loss"])) #引数：　評価指標の名前,値
+    writer.log_metric('test_acc_max_step',  np.argmax(history["test_acc"]))
 
     print('Finished Training\n')
     
