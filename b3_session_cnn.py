@@ -672,7 +672,9 @@ def main(cfg: DictConfig):
         'train_loss': [],
         'train_acc' : [],
         'valid_loss': [],
-        'valid_acc' : []
+        'valid_acc' : [],
+        'test_loss' : [],
+        'test_acc'  : []
     }
 
     # エポックの数だけ繰り返す
@@ -715,6 +717,9 @@ def main(cfg: DictConfig):
         test_loss = test_metrics['test_loss']
         test_acc = test_metrics['test_acc']
 
+        #テスト結果を保存
+        history['test_loss'].append(test_loss)
+        history['test_acc'].append(test_acc)
         # #print("テストデータに対する結果")
         # test_loss_str = f"test_loss   ：{test_loss:3.5f}"
         #print(test_loss_str)
@@ -731,6 +736,14 @@ def main(cfg: DictConfig):
         # if (valid_loss - train_loss) / valid_loss >= 0.5 and (epoch+1)%10 == 0 :
         #     print("過学習なので停止")
         #     break
+
+    #最大値を保存
+    writer.log_metric('train_loss_max', max(history["train_loss"])) #引数：評価指標の名前,値,step
+    writer.log_metric('train_acc_max',  max(history["train_acc"]))
+    writer.log_metric('valid_loss_max',  max(history["valid_loss"]))
+    writer.log_metric('valid_acc_max',  max(history["valid_acc"]))
+    writer.log_metric('test_loss_max',  max(history["test_loss"])) #引数：　評価指標の名前,値
+    writer.log_metric('test_acc_max',  max(history["test_acc"]))
 
     print('Finished Training\n')
     
