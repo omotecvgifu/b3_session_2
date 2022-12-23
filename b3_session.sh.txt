@@ -1,7 +1,7 @@
 1.transform 選定
 #transformのパターン 
 python b3_session_cnn.py --multirun name=compare_transform3 seed=0,42,100 transform.pattern=null,a,b,c,d,ab,ac,ad,bc,bd,cd,abc,abd,acd,bcd,abcd
-abcd=0.917,ac=0.914使用することにけってい
+abcd=0.917,ac=0.914使用することに決定
 
 2.モデル　選定
 
