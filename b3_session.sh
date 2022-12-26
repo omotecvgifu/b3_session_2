@@ -12,5 +12,6 @@ python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,ab
 python ./tests/gmail.py
 python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=2 model.enc_dim=64,128
 python ./tests/gmail.py
-
+#
+#python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=2 model.enc_dim=64,128 
 
