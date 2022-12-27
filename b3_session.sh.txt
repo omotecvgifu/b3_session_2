@@ -4,6 +4,9 @@ python b3_session_cnn.py --multirun name=compare_transform3 seed=0,42,100 transf
 abcd=0.917,ac=0.914使用することに決定
 
 2.モデル　選定
+python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=0,1 model.enc_dim=64,128,256
+python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=2 model.enc_dim=64,128
+type 2 enc_dim 128を使用
 
 
 

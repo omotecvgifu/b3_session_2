@@ -434,6 +434,17 @@ def make_optimizer(params, name, **kwargs):
 
 ##--------------------
 
+##--------scedular関係
+def make_scedular(optimizer,name):
+        #　学習率調整スケジューラを作成
+    if name == "ReduceLROnPlateau":
+        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, mode = 'min',patience=5,factor=0.1) 
+    elif name == "CosineAnnealingLR":
+        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=40,eta_min=1.0e-6)
+    elif name == None:
+        scheduler = None
+
+    return scheduler
 ##---------------------訓練関係
 def train_model(train_loader,model,criterion,optimizer,device):
         #========== 学習用データへの処理 ==========#
@@ -660,7 +671,7 @@ def main(cfg: DictConfig):
     # 最適化アルゴリズムを指定
     optimizer = make_optimizer(model.parameters(), **cfg.optimizer)  # 最適化関数Adam
     #　学習率調整スケジューラを作成
-    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, mode = 'min',patience=5,factor=0.1) 
+    scheduler = make_scedular(optimizer=optimizer,**cfg.scheduler)
     print("最適化関数")
     print(optimizer)
     print("\n")
@@ -699,7 +710,9 @@ def main(cfg: DictConfig):
         history['valid_acc'].append(valid_metrics['valid_acc'])
 
         # 学習率を調整
-        scheduler.step(valid_loss)
+        if scheduler != None:
+            scheduler.step(valid_loss)
+
         now_lr = optimizer.param_groups[0]["lr"]
         writer.log_metric_step("lr",now_lr,epoch+1)
 

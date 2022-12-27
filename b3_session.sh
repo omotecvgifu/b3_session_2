@@ -7,11 +7,16 @@
 #実験開始
 #transformのパターン 
 #python b3_session_cnn.py --multirun name=compare_transform3 seed=0,42,100 transform.pattern=null,a,b,c,d,ab,ac,ad,bc,bd,cd,abc,abd,acd,bcd,abcd
-#モデルのパターン
-python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=0,1 model.enc_dim=64,128,256
-python ./tests/gmail.py
-python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=2 model.enc_dim=64,128
-python ./tests/gmail.py
-#
-#python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=2 model.enc_dim=64,128 
 
+#モデルのパターン
+# python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=0,1 model.enc_dim=64,128,256
+# python ./tests/gmail.py
+# python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=2 model.enc_dim=64,128
+# python ./tests/gmail.py
+#
+
+#python b3_session_cnn.py --multirun name=compare_model transform.pattern=abcd seed=0,42,100 model.type=2 model.enc_dim=64,128 optimizer.name=Adam,SGD optimizer.weight_decay=1.0e-4
+python b3_session_cnn.py -m epochs=200 name=compare_weightdecay transform.pattern=abcd seed=0,42,100 model.type=2 model.enc_dim=64,128 optimizer.name=SGD optimizer.weight_decay=1.0e-4 scheduler.name=CosineAnnealingLR
+python ./tests/gmail.py
+python b3_session_cnn.py -m epochs=200 name=compare_weightdecay transform.pattern=abcd seed=0,42,100 model.type=2 model.enc_dim=64,128 optimizer.name=SGD optimizer.weight_decay=1.0e-4 scheduler.name=None optimizer.lr=1.0e-4
+python ./tests/gmail.py
