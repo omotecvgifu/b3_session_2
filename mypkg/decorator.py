@@ -24,20 +24,26 @@ def error_gmail(f):
 
         try:
             val = f(*args,**kwargs)
-            #本文
-            text = "pythonスクリプトが正常に完了しました"
+            # #本文
+            # text = "pythonスクリプトが正常に完了しました"
 
-            #メッセージのオブジェクト
-            msg = MIMEText(text)
-            msg['Subject'] = "pythonスクリプト完了"
-            msg['From'] = mail_from
-            msg['To'] = mail_to
-            msg['Date'] = formatdate(localtime=True)
-            smtpobj.sendmail(mail_from, mail_to, msg.as_string())
+            # #メッセージのオブジェクト
+            # msg = MIMEText(text)
+            # msg['Subject'] = "pythonスクリプト完了"
+            # msg['From'] = mail_from
+            # msg['To'] = mail_to
+            # msg['Date'] = formatdate(localtime=True)
+            # smtpobj.sendmail(mail_from, mail_to, msg.as_string())
 
             return val
         except BaseException as error:
+            if type(error) == KeyboardInterrupt:
+                print("キーボード中断")
+                return 0
+
+                
             print("エラー発生")
+            print(error)
             #本文
             text = f"pythonスクリプトでエラーが発生しました\ntype:{type(error)}\n{str(error)}"
 

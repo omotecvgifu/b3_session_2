@@ -44,7 +44,10 @@ from mypkg import decorator,myExp
 ##--------------------実験を行うメインのクラス
 
 #hydraを使用して実験設定を読み込み
-@hydra.main(version_base=None, config_path=".", config_name="config")
+@hydra.main(version_base=None, config_path="./", config_name="config")
+def main2(cfg:DictConfig):
+    main(cfg)
+
 @decorator.error_gmail
 def main(cfg: DictConfig):
 
@@ -291,7 +294,7 @@ def main(cfg: DictConfig):
     writer.set_terminated()#一つのexperimentまたはrunを終えるときは必ず呼び出す
 
 if __name__ == '__main__':
-    main()
+    main2()
 
 
 
