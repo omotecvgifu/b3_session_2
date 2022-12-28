@@ -1,6 +1,8 @@
 import smtplib
 from email.mime.text import MIMEText
 from email.utils import formatdate
+import traceback
+import sys
 
 
 def error_gmail(f):
@@ -36,16 +38,17 @@ def error_gmail(f):
             # smtpobj.sendmail(mail_from, mail_to, msg.as_string())
 
             return val
-        except BaseException as error:
+        except Exception as error:
             if type(error) == KeyboardInterrupt:
                 print("キーボード中断")
-                return 0
-
+                sys.exit()
                 
+
+            error_log = traceback.format_exc()
             print("エラー発生")
-            print(error)
+            print(error_log)
             #本文
-            text = f"pythonスクリプトでエラーが発生しました\ntype:{type(error)}\n{str(error)}"
+            text = f"pythonスクリプトでエラーが発生しました\ntype:{type(error)}\n{str(error)}\n\n詳細\n{error_log}"
 
             #メッセージのオブジェクト
             msg = MIMEText(text)

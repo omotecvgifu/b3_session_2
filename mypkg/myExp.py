@@ -6,6 +6,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from torchvision import transforms
 from torchvision.datasets import CIFAR10, ImageFolder
+import torch.optim.lr_scheduler as lr_scheduler
 # from torchvision.utils import make_grid
 
 # モデル構造の表示
@@ -440,9 +441,9 @@ def make_optimizer(params, name, **kwargs):
 def make_scedular(optimizer,name):
         #　学習率調整スケジューラを作成
     if name == "ReduceLROnPlateau":
-        scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, mode = 'min',patience=5,factor=0.1) 
+        scheduler = lr_scheduler.ReduceLROnPlateau(optimizer = optimizer, mode = 'min',patience=5,factor=0.1) 
     elif name == "CosineAnnealingLR":
-        scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=40,eta_min=1.0e-6)
+        scheduler = lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=20,eta_min=1.0e-4)
     elif name == None:
         scheduler = None
     else:

@@ -6,6 +6,7 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, random_split
 from torchvision import transforms
 from torchvision.datasets import CIFAR10, ImageFolder
+import torch.optim.lr_scheduler as lr_scheduler
 # from torchvision.utils import make_grid
 
 # モデル構造の表示
@@ -50,6 +51,7 @@ def main2(cfg:DictConfig):
 
 @decorator.error_gmail
 def main(cfg: DictConfig):
+
 
     #========== 実験を行うための前準備 ==========#
     #cfgはconfig.ymlをpythonのdict形式に変換したもの
@@ -199,10 +201,12 @@ def main(cfg: DictConfig):
         history['valid_acc'].append(valid_metrics['valid_acc'])
 
         # 学習率を調整
-        if scheduler == "ReduceLROnPlateau":
+        if isinstance(scheduler,lr_scheduler.ReduceLROnPlateau):
             scheduler.step(valid_loss)
+        elif isinstance(scheduler,lr_scheduler.CosineAnnealingLR):
+            scheduler.step()
 
-        now_lr = optimizer.param_groups[0]["lr"]
+        now_lr = optimizer.param_groups[0]["lr"] #scheduler.get_last_lr()[0]
         writer.log_metric_step("lr",now_lr,epoch+1)
 
         #学習過程をmlflowに記録
