@@ -445,7 +445,10 @@ def make_scedular(optimizer,name):
         scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer=optimizer,T_max=40,eta_min=1.0e-6)
     elif name == None:
         scheduler = None
-
+    else:
+        raise Exception("スケジューラが存在しない")
+    print("スケジューラー")
+    print(scheduler)
     return scheduler
 ##---------------------訓練関係
 def train_model(train_loader,model,criterion,optimizer,device):

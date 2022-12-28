@@ -31,5 +31,5 @@ optimizer:
   weight_decay: 0 #1.0e-4
 
 scheduler:
-  name: ReduceLROnPlateau #ReduceLROnPlateau  CosineAnnealingLR  None
+  name: ReduceLROnPlateau #ReduceLROnPlateau  CosineAnnealingLR  null
 

@@ -199,7 +199,7 @@ def main(cfg: DictConfig):
         history['valid_acc'].append(valid_metrics['valid_acc'])
 
         # 学習率を調整
-        if scheduler != None:
+        if scheduler == "ReduceLROnPlateau":
             scheduler.step(valid_loss)
 
         now_lr = optimizer.param_groups[0]["lr"]
