@@ -6,9 +6,12 @@ abcd=0.917,ac=0.914使用することに決定
 2.モデル　選定
 python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=0,1 model.enc_dim=64,128,256
 python b3_session_cnn.py --multirun name=compare_model transform.pattern=null,abcd seed=0,42,100 model.type=2 model.enc_dim=64,128
-type 2 enc_dim 128を使用
+type 2 enc_dim 64を使用
 
-
+3.重み正則化
+python b3_session_cnn.py -m name=compare_weightdecay2 transform.pattern=abcd seed=0,42,100 model.type=5 model.enc_dim=64 optimizer.name=Adam,SGD optimizer.weight_decay=0,1.0e-6
+python ./a_tests/gmail.py
+train accが不十分
 
 
 モデル選定

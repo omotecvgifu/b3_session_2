@@ -277,6 +277,24 @@ class EncoderBlock(nn.Module):
         out = self.relu(out)
         return out
 
+class SE_Block(nn.Module):
+    "credits: https://github.com/moskomule/senet.pytorch/blob/master/senet/se_module.py#L4"
+    def __init__(self, c, r=16):
+        super().__init__()
+        self.squeeze = nn.AdaptiveAvgPool2d(1)
+        self.excitation = nn.Sequential(
+            nn.Linear(c, c // r, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Linear(c // r, c, bias=False),
+            nn.Sigmoid()
+        )
+
+    def forward(self, x):
+        bs, c, _, _ = x.shape
+        y = self.squeeze(x).view(bs, c)
+        y = self.excitation(y).view(bs, c, 1, 1)
+        return x * y.expand_as(x)
+
 class Classifier(nn.Module):
     def __init__(self, class_num, enc_dim, in_w, in_h,type=0):
         super().__init__()
@@ -408,6 +426,139 @@ class Classifier(nn.Module):
                 nn.ReLU(),
                 nn.Linear(256, self.class_num),
             )
+        elif(type == 3):
+            self.in_w = in_w
+            self.in_h = in_h
+            self.fc_dim = enc_dim * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
+            self.class_num = class_num
+
+            self.encoder = nn.Sequential(
+                EncoderBlock(3      , enc_dim),
+                EncoderBlock(enc_dim, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                SE_Block(enc_dim*2),
+                nn.MaxPool2d(kernel_size=2),#h,wが1/2
+
+                EncoderBlock(enc_dim*2, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*8),
+                SE_Block(enc_dim*8),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*8, enc_dim*8),
+                EncoderBlock(enc_dim*8, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                SE_Block(enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*4, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim),
+                SE_Block(enc_dim),
+            )
+
+
+            self.fc = nn.Sequential(
+                nn.Linear(self.fc_dim, 512),
+                nn.ReLU(),
+                nn.Linear(512, 256),
+                nn.ReLU(),
+                nn.Linear(256, self.class_num),
+            )
+        elif(type == 4):
+            self.in_w = in_w
+            self.in_h = in_h
+            self.fc_dim = enc_dim * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
+            self.class_num = class_num
+
+            self.encoder = nn.Sequential(
+                EncoderBlock(3      , enc_dim),
+                EncoderBlock(enc_dim, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                SE_Block(enc_dim*2),
+                nn.MaxPool2d(kernel_size=2),#h,wが1/2
+
+                EncoderBlock(enc_dim*2, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*8),
+                SE_Block(enc_dim*8),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*8, enc_dim*8),
+                EncoderBlock(enc_dim*8, enc_dim*8),
+                EncoderBlock(enc_dim*8, enc_dim*8),
+                EncoderBlock(enc_dim*8, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                SE_Block(enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*4, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim),
+                SE_Block(enc_dim),
+            )
+
+
+            self.fc = nn.Sequential(
+                nn.Linear(self.fc_dim, 512),
+                nn.ReLU(),
+                nn.Linear(512, 256),
+                nn.ReLU(),
+                nn.Linear(256, self.class_num),
+            )
+        elif(type == 5):
+            self.in_w = in_w
+            self.in_h = in_h
+            self.fc_dim = enc_dim*4 * int(in_h/2/2/2) * int(in_w/2/2/2) #pooling回数分割る
+            self.class_num = class_num
+
+            self.encoder = nn.Sequential(
+                EncoderBlock(3      , enc_dim),
+                EncoderBlock(enc_dim, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*2),
+                EncoderBlock(enc_dim*2, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                SE_Block(enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),#h,wが1/2
+
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                SE_Block(enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                SE_Block(enc_dim*4),
+                nn.MaxPool2d(kernel_size=2),
+
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                EncoderBlock(enc_dim*4, enc_dim*4),
+                SE_Block(enc_dim*4),
+            )
+
+
+            self.fc = nn.Sequential(
+                nn.Linear(self.fc_dim, 512),
+                nn.ReLU(),
+                nn.Linear(512, 256),
+                nn.ReLU(),
+                nn.Linear(256, self.class_num),
+            )
     def forward(self, x):
         out = self.encoder(x)
         out = out.view(-1, self.fc_dim)
@@ -423,10 +574,12 @@ def initialize_weights(m):
             nn.init.constant_(m.bias.data, 0)   # bias項は0に初期化
     elif isinstance(m, nn.BatchNorm2d):         # BatchNormalization層が引数に渡された場合
         nn.init.constant_(m.weight.data, 1)
-        nn.init.constant_(m.bias.data, 0)
+        if m.bias is not None:
+            nn.init.constant_(m.bias.data, 0)       # biasは0に初期化
     elif isinstance(m, nn.Linear):              # 全結合層が引数に渡された場合
         nn.init.kaiming_normal_(m.weight.data)  # kaimingの初期化
-        nn.init.constant_(m.bias.data, 0)       # biasは0に初期化
+        if m.bias is not None:
+            nn.init.constant_(m.bias.data, 0)       # biasは0に初期化
 ##--------------------------------------------
 
 
